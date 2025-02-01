@@ -22,7 +22,7 @@ class ApiResourceSuccess extends JsonResource
     {
         return [
             'message' => $this->message,
-            'data' => $this->resource ?? null,
+            'data' => $this->resource,
         ];
     }
 
