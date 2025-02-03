@@ -14,14 +14,17 @@ class Phone extends Model
 
     public $incrementing = false;
 
-    // protected $keyType = 'string';
+    public $timestamps = true;
 
-    // public $timestamps = false;
+    // protected $keyType = 'string';
 
     protected $fillable = [
         'id',
         'type_phone',
         'merk_phone',
+        'created_by',
+        'updated_by',
+        'deleted_by',
     ];
 
     public function services(): HasMany

@@ -14,14 +14,17 @@ class Technician extends Model
 
     public $incrementing = false;
 
-    // protected $keyType = 'string';
+    public $timestamps = true;
 
-    // public $timestamps = false;
+    // protected $keyType = 'string';
 
     protected $fillable = [
         'id',
         'user_id',
-        'counter_id'
+        'counter_id',
+        'created_by',
+        'updated_by',
+        'deleted_by',
     ];
 
     public function user(): BelongsTo

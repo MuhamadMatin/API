@@ -14,16 +14,19 @@ class Damage extends Model
 
     public $incrementing = false;
 
-    // protected $keyType = 'string';
+    public $timestamps = true;
 
-    // public $timestamps = false;
+    // protected $keyType = 'string';
 
     protected $fillable = [
         'id',
         'name',
-        'slug',
+        // 'slug',
         'price',
-        'condition_description'
+        'condition_description',
+        'created_by',
+        'updated_by',
+        'deleted_by',
     ];
 
     public function services(): HasMany

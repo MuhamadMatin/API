@@ -24,6 +24,8 @@ class User extends Authenticatable
 
     public $incrementing = false;
 
+    public $timestamps = true;
+
     // protected $keyType = 'string';
 
     protected $fillable = [
@@ -33,6 +35,9 @@ class User extends Authenticatable
         'email',
         'password',
         'number_phone',
+        'created_by',
+        'updated_by',
+        'deleted_by',
     ];
 
     /**

@@ -14,9 +14,9 @@ class Service extends Model
 
     public $incrementing = false;
 
-    // protected $keyType = 'string';
+    public $timestamps = true;
 
-    // public $timestamps = false;
+    // protected $keyType = 'string';
 
     protected $fillable = [
         'id',
@@ -34,6 +34,9 @@ class Service extends Model
         'sparepart_id',
         'start_waranty',
         'end_waranty',
+        'created_by',
+        'updated_by',
+        'deleted_by',
     ];
 
     public function user(): BelongsTo

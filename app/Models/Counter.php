@@ -13,15 +13,18 @@ class Counter extends Model
 
     public $incrementing = false;
 
-    // protected $keyType = 'string';
+    public $timestamps = true;
 
-    // public $timestamps = false;
+    // protected $keyType = 'string';
 
     protected $fillable = [
         'id',
         'counter_name',
         'counter_address',
         'counter_phone',
+        'created_by',
+        'updated_by',
+        'deleted_by',
     ];
 
     public function services(): HasMany
