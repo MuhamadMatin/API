@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Counter;
 use App\Models\User;
+use App\Models\Counter;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,13 +18,19 @@ class TechnicianFactory extends Factory
      */
     public function definition(): array
     {
-        $randomLetter = $this->faker->lexify();
-        $randomnumber = $this->faker->numberBetween();
-        $id = strtoupper($randomLetter . $randomnumber);
+        $randomLetter = $this->faker->unique()->lexify();
+        // $randomnumber = $this->faker->numberBetween();
+        $id = strtoupper($randomLetter);
         return [
             'id' => $id,
             'user_id' => User::inRandomOrder()->first()->id,
-            'counter_id' => Counter::inRandomOrder()->first()->id
+            'counter_id' => Counter::inRandomOrder()->first()->id,
+            'created_at' => now(),
+            'created_by' => 'Migrations',
+            'updated_at' => NULL,
+            'updated_by' => NULL,
+            'deleted_at' => NULL,
+            'deleted_by' => NULL,
         ];
     }
 }

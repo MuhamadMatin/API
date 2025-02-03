@@ -18,8 +18,11 @@ return new class extends Migration
             $table->float('price');
             $table->integer('stock');
             $table->string('description')->nullable();
-            $table->softDeletes();
             $table->timestamps();
+            $table->string('created_by')->nullable();
+            $table->string('updated_by')->nullable();
+            $table->softDeletes();
+            $table->string('deleted_by')->nullable();
         });
     }
 

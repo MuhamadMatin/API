@@ -16,8 +16,11 @@ return new class extends Migration
             $table->string('counter_name');
             $table->string('counter_address');
             $table->string('counter_phone');
-            $table->softDeletes();
             $table->timestamps();
+            $table->string('created_by')->nullable();
+            $table->string('updated_by')->nullable();
+            $table->softDeletes();
+            $table->string('deleted_by')->nullable();
         });
     }
 

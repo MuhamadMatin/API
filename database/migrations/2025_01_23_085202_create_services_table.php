@@ -43,8 +43,11 @@ return new class extends Migration
             // $table->foreignIdFor(Sparepart::class)->constrained();
             $table->date('start_waranty');
             $table->date('end_waranty');
-            $table->softDeletes();
             $table->timestamps();
+            $table->string('created_by')->nullable();
+            $table->string('updated_by')->nullable();
+            $table->softDeletes();
+            $table->string('deleted_by')->nullable();
         });
     }
 

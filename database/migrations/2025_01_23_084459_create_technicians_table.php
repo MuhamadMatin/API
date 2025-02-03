@@ -21,8 +21,11 @@ return new class extends Migration
             $table->foreign('counter_id')->references('id')->on('counters')->constrained();
             // $table->foreignIdFor(User::class)->constrained();
             // $table->foreignIdFor(Counter::class)->constrained();
-            $table->softDeletes();
             $table->timestamps();
+            $table->string('created_by')->nullable();
+            $table->string('updated_by')->nullable();
+            $table->softDeletes();
+            $table->string('deleted_by')->nullable();
         });
     }
 

@@ -20,9 +20,9 @@ class SparepartFactory extends Factory
         $name_sparepart = $this->faker->unique->name();
         $slug = Str::slug($name_sparepart);
 
-        $randomLetter = $this->faker->lexify();
-        $randomnumber = $this->faker->numberBetween();
-        $id = strtoupper($randomLetter . $randomnumber);
+        $randomLetter = $this->faker->unique()->lexify();
+        // $randomnumber = $this->faker->numberBetween();
+        $id = strtoupper($randomLetter);
         return [
             'id' => $id,
             'name' => $name_sparepart,
@@ -30,6 +30,12 @@ class SparepartFactory extends Factory
             'price' => $this->faker->numberBetween(75000, 500000),
             'stock' => $this->faker->numberBetween(100, 1000),
             'description' => $this->faker->sentence(),
+            'created_at' => now(),
+            'created_by' => 'Migrations',
+            'updated_at' => NULL,
+            'updated_by' => NULL,
+            'deleted_at' => NULL,
+            'deleted_by' => NULL,
         ];
     }
 }

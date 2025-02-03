@@ -16,13 +16,19 @@ class PhoneFactory extends Factory
      */
     public function definition(): array
     {
-        $randomLetter = $this->faker->lexify();
-        $randomnumber = $this->faker->numberBetween();
-        $id = strtoupper($randomLetter . $randomnumber);
+        $randomLetter = $this->faker->unique()->lexify();
+        // $randomnumber = $this->faker->numberBetween();
+        $id = strtoupper($randomLetter);
         return [
             'id' => $id,
             'type_phone' => $this->faker->sentence(4),
-            'merk_phone' => $this->faker->sentence(2)
+            'merk_phone' => $this->faker->sentence(2),
+            'created_at' => now(),
+            'created_by' => 'Migrations',
+            'updated_at' => NULL,
+            'updated_by' => NULL,
+            'deleted_at' => NULL,
+            'deleted_by' => NULL,
         ];
     }
 }

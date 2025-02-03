@@ -15,8 +15,11 @@ return new class extends Migration
             $table->char('id')->primary();
             $table->string('type_phone');
             $table->string('merk_phone');
-            $table->softDeletes();
             $table->timestamps();
+            $table->string('created_by')->nullable();
+            $table->string('updated_by')->nullable();
+            $table->softDeletes();
+            $table->string('deleted_by')->nullable();
         });
     }
 

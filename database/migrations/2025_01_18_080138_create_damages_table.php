@@ -19,8 +19,11 @@ return new class extends Migration
             // $table->string('slug')->unique();
             $table->float('price');
             $table->string('condition_description');
-            $table->softDeletes();
             $table->timestamps();
+            $table->string('created_by')->nullable();
+            $table->string('updated_by')->nullable();
+            $table->softDeletes();
+            $table->string('deleted_by')->nullable();
         });
     }
 

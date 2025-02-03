@@ -2,8 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Service;
-use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -22,15 +20,21 @@ class DamageFactory extends Factory
         $name_damage = $this->faker->unique->name();
         $slug = Str::slug($name_damage);
 
-        $randomLetter = $this->faker->lexify();
-        $randomnumber = $this->faker->numberBetween();
-        $id = strtoupper($randomLetter . $randomnumber);
+        $randomLetter = $this->faker->unique()->lexify();
+        // $randomnumber = $this->faker->numberBetween();
+        $id = strtoupper($randomLetter);
         return [
             'id' => $id,
             'name' => $name_damage,
             // 'slug' => $slug,
             'price' => $this->faker->numberBetween(75000, 500000),
             'condition_description' => $this->faker->sentence(),
+            'created_at' => now(),
+            'created_by' => 'Migrations',
+            'updated_at' => NULL,
+            'updated_by' => NULL,
+            'deleted_at' => NULL,
+            'deleted_by' => NULL,
         ];
     }
 }
