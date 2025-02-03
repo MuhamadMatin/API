@@ -36,7 +36,7 @@ class CounterController extends Controller
             'id' => 'required|unique:counters,id',
             'counter_name' => 'required',
             'counter_address' => 'required',
-            'counter_phone' => 'required|numeric',
+            'counter_phone' => 'required|numeric|digits_between:10,15',
         ]);
 
         if ($validators->fails()) {
@@ -58,6 +58,7 @@ class CounterController extends Controller
                 'counter_phone' => $request->counter_phone,
                 'created_at' => now(),
                 'created_by' => Auth::id(),
+                'updated_at' => NULL,
             ]);
 
             DB::commit();
@@ -90,7 +91,7 @@ class CounterController extends Controller
             // 'id' => 'sometimes',
             'counter_name' => 'sometimes',
             'counter_address' => 'sometimes',
-            'counter_phone' => 'sometimes|numeric',
+            'counter_phone' => 'sometimes|numeric|digits_between:10,15',
         ]);
 
         if ($validators->fails()) {

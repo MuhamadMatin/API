@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Damage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Resources\ApiResource;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ApiResourceFailed;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\ApiResourceSuccess;
 
 class DamageController extends Controller
@@ -30,7 +32,32 @@ class DamageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validators = Validator::make($request->all(), [
+            'id' => 'required',
+            'name' => 'required',
+            'price'  => 'required|integer|min:0',
+            'condition_description' => 'required'
+        ]);
+
+        if ($validators->fails()) {
+            return new ApiResourceFailed($validators->errors(), 'Something wrong', 422);
+        }
+
+        DB::beginTransaction();
+        try {
+            $counter = Damage::create([
+                'id' => strtoupper($request->id),
+                'name' => $request->name,
+                'price'  => $request->price,
+                'condition_description' => $request->condition_description,
+                'updated_at' => NULL,
+            ]);
+            DB::commit();
+            return new ApiResourceSuccess($counter, 'Insert damage success', 200);
+        } catch (\Throwable $e) {
+            DB::rollback();
+            return new ApiResourceFailed($e, 'Something wrong', 422);
+        }
     }
 
     /**
