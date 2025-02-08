@@ -7,6 +7,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -18,14 +19,21 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         // $middleware->append(UnauthenticatedToken::class);
     })
-    ->withExceptions(function (Exceptions $exceptions) {
-        // custom message Unauthenticated
-        $exceptions->render(function (Throwable $e, $request) {
-            if ($e instanceof AuthenticationException) {
-                return response()->json([
-                    'message' => 'Someting wrong',
-                    'errors' => 'Unauthenticated or invalid token'
-                ], 401);
-            }
-        });
-    })->create();
+    ->withExceptions(
+        function (Exceptions $exceptions) {
+            $exceptions->render(function (Throwable $e, $request) {
+                if ($e instanceof AuthenticationException) {
+                    return response()->json([
+                        'message' => 'Someting wrong',
+                        'errors' => 'Unauthenticated or invalid token'
+                    ], 401);
+                }
+                if ($e instanceof MethodNotAllowedHttpException) {
+                    return response()->json([
+                        'message' => 'Something wrong',
+                        'errors' => 'Method Not Allowed'
+                    ], 405);
+                }
+            });
+        }
+    )->create();

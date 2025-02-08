@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Service;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\ApiResourceFailed;
-use App\Http\Resources\ApiResourceSuccess;
+use Illuminate\Support\Facades\DB;
 
-use function Pest\Laravel\json;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\ApiResourceFailed;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\ApiResourceSuccess;
 
 class ServiceController extends Controller
 {
@@ -31,7 +33,55 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validators = Validator::make($request->all(), [
+            'id' => 'required|unique:spareparts,id',
+            'subtotal' => 'required|integer|min:0',
+            'total' => 'required|integer|min:0',
+            'status' => 'required|in:Service,Waiting Service,Done,Waiting owner',
+            'address' => 'required',
+            'description' => 'required',
+            'phone_id' => 'required|exists:phones,id',
+            'user_id' => 'required|exists:users,id',
+            'technician_id' => 'required|exists:technicians,id',
+            'damage_id' => 'required|exists:damages,id',
+            'service_id' => 'required|exists:services,id',
+            'sparepart_id' => 'required|exists:spareparts,id',
+            'start_waranty' => 'required|date_format:Y-m-d H:i|after:yesterday',
+            'end_waranty' => 'required|date_format:Y-m-d H:i|after:start_waranty',
+        ]);
+
+        if ($validators->fails()) {
+            return new ApiResourceFailed($validators->errors(), 'Something wrong', 422);
+        }
+
+        DB::beginTransaction();
+        try {
+            $service = Service::create([
+                'id' => strtoupper($request->id),
+                'subtotal' => $request->subtotal,
+                'total' => $request->total,
+                'status' => $request->status,
+                'address' => $request->address,
+                'description' => $request->description,
+                'phone_id' => $request->phone_id,
+                'user_id' => $request->user_id,
+                'technician_id' => $request->technician_id,
+                'damage_id' => $request->damage_id,
+                'service_id' => $request->service_id,
+                'sparepart_id' => $request->sparepart_id,
+                'start_waranty' => $request->start_waranty,
+                'end_waranty' => $request->end_waranty,
+                'created_at' => now(),
+                'created_by' => Auth::id(),
+                'updated_at' => NULL,
+            ]);
+
+            DB::commit();
+            return new ApiResourceSuccess(null, 'Insert service success', 200);
+        } catch (\Throwable $e) {
+            DB::rollback();
+            return new ApiResourceFailed($e, 'Something wrong', 422);
+        }
     }
 
     /**
@@ -54,7 +104,60 @@ class ServiceController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validators = Validator::make($request->all(), [
+            'id' => 'required|unique:spareparts,id',
+            'subtotal' => 'required|integer|min:0',
+            'total' => 'required|integer|min:0',
+            'status' => 'required|in:Service,Waiting Service,Done,Waiting owner',
+            'address' => 'required',
+            'description' => 'required',
+            'phone_id' => 'required|exists:phones,id',
+            'user_id' => 'required|exists:users,id',
+            'technician_id' => 'required|exists:technicians,id',
+            'damage_id' => 'required|exists:damages,id',
+            'service_id' => 'required|exists:services,id',
+            'sparepart_id' => 'required|exists:spareparts,id',
+            'start_waranty' => 'required|date_format:Y-m-d H:i|after:yesterday',
+            'end_waranty' => 'required|date_format:Y-m-d H:i|after:start_waranty',
+        ]);
+
+        if ($validators->fails()) {
+            return new ApiResourceFailed($validators->errors(), 'Something wrong', 422);
+        }
+
+        DB::beginTransaction();
+        try {
+            $service = Service::find($id);
+            if (!$service) {
+                return new ApiResourceFailed(null, 'Service not found', 404);
+            }
+
+            $service = Service::create([
+                'id' => strtoupper($request->id),
+                'subtotal' => $request->subtotal,
+                'total' => $request->total,
+                'status' => $request->status,
+                'address' => $request->address,
+                'description' => $request->description,
+                'phone_id' => $request->phone_id,
+                'user_id' => $request->user_id,
+                'technician_id' => $request->technician_id,
+                'damage_id' => $request->damage_id,
+                'service_id' => $request->service_id,
+                'sparepart_id' => $request->sparepart_id,
+                'start_waranty' => $request->start_waranty,
+                'end_waranty' => $request->end_waranty,
+                'created_at' => now(),
+                'created_by' => Auth::id(),
+                'updated_at' => NULL,
+            ]);
+
+            DB::commit();
+            return new ApiResourceSuccess(null, 'Insert service success', 200);
+        } catch (\Throwable $e) {
+            DB::rollback();
+            return new ApiResourceFailed($e, 'Something wrong', 422);
+        }
     }
 
     /**
@@ -62,16 +165,22 @@ class ServiceController extends Controller
      */
     public function destroy(string $id)
     {
+        DB::beginTransaction();
         try {
             $service = Service::find($id);
             if (!$service) {
-                return new ApiResourceFailed($service, 'Service not found', 404);
+                return new ApiResourceFailed(null, 'Service not found', 404);
             }
+
+            $service->deleted_at = now();
+            $service->deleted_by = Auth::id();
+            $service->save();
             $service->delete();
 
+            DB::commit();
             return new ApiResourceSuccess(null, 'Delete success', 200);
-        } catch (\Exception $e) {
-            return new ApiResourceFailed($e, 'Errors', 500);
+        } catch (\Throwable $e) {
+            return new ApiResourceFailed($e, 'Something wrong', 400);
         }
     }
 }
